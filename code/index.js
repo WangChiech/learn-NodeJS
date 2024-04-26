@@ -1,5 +1,2 @@
-import dns from 'dns'
-
-dns.lookup('wangjie.vip', (err, address, family) => {
-  console.log('address: %j family: IPv%s', address, family)
-})
+console.log(process.env)
+console.log(process.env.NODE_ENV)
