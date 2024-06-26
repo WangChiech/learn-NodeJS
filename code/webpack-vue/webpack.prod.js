@@ -1,19 +1,18 @@
-const { VueLoaderPlugin } = require('vue-loader')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { VueLoaderPlugin } = require('vue-loader')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 const webpack = require('webpack')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: './src/index.js',
   output: {
-    filename: '[name]_[chunkhash:8].js',
-    path: __dirname + '/dist'
+    filename: '[name]_[chunkhash:2].js',
+    path: __dirname + '/dist',
+    clean: true
   },
-  mode: 'development',
-  devtool: 'source-map',
-  devServer: {
-    open: true
-  },
+  mode: 'none',
   module: {
     rules: [
       {
@@ -32,9 +31,8 @@ module.exports = {
         test: /\.scss$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader',
-          'sass-loader'
+          // 'css-loader',
+          'scss-loader'
         ]
       }
     ]
@@ -44,7 +42,7 @@ module.exports = {
       __VUE_OPTIONS_API__: 'true',
       __VUE_PROD_DEVTOOLS__: 'false',
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
-      'process.env.NODE_ENV': JSON.stringify('development')
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
@@ -53,7 +51,13 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name]_[contenthash:1].css'
     }),
+    new BundleAnalyzerPlugin()
   ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   resolve: {
     alias: {
       vue: 'vue/dist/vue.runtime.esm-bundler.js'
